@@ -9,7 +9,7 @@
     "build": "npm run clean && tsc && cp package.json www/package.json && mkdir www/tmp/ && cd www && zip -r Archive.zip . && cd ..",
     "dev": "ts-node-dev ./src/server.ts"
   },
-  "author": "Matthew Eddy",
+  "author": "Matthew James Eddy",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
