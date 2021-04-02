@@ -1,5 +1,5 @@
 import express from 'express';
-import bodyParser from 'body-parser';
+import * as AWS from './aws';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
 (async () => {
@@ -11,7 +11,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   const port = process.env.PORT || 8082;
   
   // Use the body parser middleware for post requests
-  app.use(bodyParser.json());
+  app.use(express.json());
 
   // @TODO1 IMPLEMENT A RESTFUL ENDPOINT
   // GET /filteredimage?image_url={{URL}}
@@ -30,6 +30,10 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   /**************************************************************************** */
 
   //! END @TODO1
+  app.get('/image',  (req, res) => {
+    AWS.getItem();
+    res.send('Message');
+  })
   
   // Root Endpoint
   // Displays a simple message to the user
