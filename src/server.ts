@@ -1,6 +1,9 @@
 import express from 'express';
-import { Router, Request, Response } from 'express';
-import * as AWS from './aws';
+import { Request, Response } from 'express';
+import querystring from 'querystring';
+import { readdir } from 'fs';
+import { join } from 'path';
+
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
 (async () => {
@@ -31,10 +34,26 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   /**************************************************************************** */
 
   //! END @TODO1
-  app.get('/image',  (req: Request, res: Response) => {
-    AWS.getItem();
-    res.send('Message');
-  })
+  app.get('/filteredimage', async (req: Request, res: Response) => {
+    const queryObject = querystring.parse(req.url, '?');
+    const image = await filterImageFromURL(queryObject.image_url.toString());
+    res.send(image);
+    res.on('finish', () => {
+      const dir = join(__dirname, 'util', 'tmp');
+      readdir(dir, {encoding: 'utf8'}, (err, files) => {
+        if (err) {
+          throw new Error(err.message);
+        } else {
+          const deleteFiles = files.map(file => {
+            return join(dir, file);
+          })
+          deleteLocalFiles(deleteFiles);
+        }
+      })
+    })
+  });
+
+  
   
   // Root Endpoint
   // Displays a simple message to the user
