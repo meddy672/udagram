@@ -1,4 +1,5 @@
 import express from 'express';
+import { Router, Request, Response } from 'express';
 import * as AWS from './aws';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
@@ -30,7 +31,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   /**************************************************************************** */
 
   //! END @TODO1
-  app.get('/image',  (req, res) => {
+  app.get('/image',  (req: Request, res: Response) => {
     AWS.getItem();
     res.send('Message');
   })

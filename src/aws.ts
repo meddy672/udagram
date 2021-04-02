@@ -1,21 +1,22 @@
 import AWS from 'aws-sdk';
+import { config} from './config/config';
 
 //Configure AWS
-const credentials = new AWS.SharedIniFileCredentials({profile: 'adminMeddy'});
+const credentials = new AWS.SharedIniFileCredentials({profile: config.dev.aws_profile});
 AWS.config.credentials = credentials;
 
 
 export const s3 = new AWS.S3({
     signatureVersion: 'v4',
-    region: 'us-east-1',
-    params: {Bucket: "udagram-eddy-dev"}
+    region: config.dev.aws_region,
+    params: {Bucket: config.dev.aws_media_bucket}
   });
 
 
 export function getItem() {
 
     const params = {
-        Bucket: "udagram-eddy-dev", 
+        Bucket: config.dev.aws_media_bucket, 
         Key: "evolution-3885331_1920.jpg"
        };
        s3.getObject(params, function(err, data) {
@@ -30,7 +31,7 @@ export function getGetSignedUrl( key: string ): string{
     const signedUrlExpireSeconds = 60 * 5;
   
     const url = s3.getSignedUrl('getObject', {
-          Bucket: 'udagram-eddy-dev',
+          Bucket: config.dev.aws_media_bucket,
           Key: key,
           Expires: signedUrlExpireSeconds
     });
