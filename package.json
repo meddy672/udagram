@@ -16,7 +16,8 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jimp": "^0.16.1",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "url-validation": "^2.1.0"
   },
   "homepage": "https://github.com/meddy672/udagram.git#readme",
   "devDependencies": {

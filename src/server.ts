@@ -1,10 +1,14 @@
 import express from 'express';
 import { Request, Response } from 'express';
 import querystring from 'querystring';
+const isUrlValid = require('url-validation');
 import { readdir } from 'fs';
+import { promisify } from 'util';
 import { join } from 'path';
 
-import {filterImageFromURL, deleteLocalFiles} from './util/util';
+import { filterImageFromURL, deleteLocalFiles } from './util/util';
+const readdirProm = promisify(readdir);
+const dir = join(__dirname, 'util', 'tmp');
 
 (async () => {
 
@@ -35,23 +39,49 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
   //! END @TODO1
   app.get('/filteredimage', async (req: Request, res: Response) => {
-    const queryObject = querystring.parse(req.url, '?');
-    const image = await filterImageFromURL(queryObject.image_url.toString());
-    res.send(image);
-    res.on('finish', () => {
-      const dir = join(__dirname, 'util', 'tmp');
-      readdir(dir, {encoding: 'utf8'}, (err, files) => {
-        if (err) {
-          throw new Error(err.message);
-        } else {
-          const deleteFiles = files.map(file => {
-            return join(dir, file);
-          })
-          deleteLocalFiles(deleteFiles);
-        }
-      })
-    })
+    const image_url = parseURLString(req.url);
+    if (!isUrlValid(image_url)) {
+      res.send('URL is not valid');
+      return;
+    }
+    const imgPath = await filterImagePath(image_url);
+    res.send(imgPath);
+    res.on('finish', removeImagesFromServer);
   });
+
+  /**
+   * parse the URL for the query parameter
+   */
+  function parseURLString(url: string): string {
+    return querystring.parse(url, '?').image_url.toString();
+  }
+
+  /**
+   * return path on the server
+   */
+  async function filterImagePath(image_url: string): Promise<string> {
+    return await filterImageFromURL(image_url);
+  }
+
+  /**
+   * read the content of the tmp directory
+   */
+  async function removeImagesFromServer() {
+    try {
+      const files = await readdirProm(dir, { encoding: 'utf8' });
+      deleteFiles(files);
+    } catch (err) {
+      throw new Error('Faild to read directory content' + err.message);
+    }
+  }
+
+  /**
+   *  delete the images off the server
+   */
+  async function deleteFiles(files: string[]): Promise<void>{
+    const deleteFiles = files.map(file => {return join(dir, file)});
+    deleteLocalFiles(deleteFiles);
+  }
 
   
   
