@@ -1,4 +1,5 @@
 # Udagram
+[Live Version](http://image-filter-starter-code-dev222222222.us-east-1.elasticbeanstalk.com/filteredimage?image_url=https://upload.wikimedia.org/wikipedia/commons/b/bd/Golden_tabby_and_white_kitten_n01.jpg)
 
 ## Overview
 Udagram is a simple Web Service built with **Node.js**, and **Typescript**, launched on the **AWS Platform** [Elastic Beanstalk CLI](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3.html). The application allows for users to send a
@@ -20,7 +21,7 @@ Udagram is a simple Web Service built with **Node.js**, and **Typescript**, laun
 5. `src/config/config.js` - This file is a basic config file (Only if saving Objects to an S3 bucket). 
 6. `src/www` - This directory contains production version the application
 
-## Starting The Application
+## Starting The Application Locally
 1. Clone or download the repository
 2. Run `npm install`
 3. Run `npm run dev`
