@@ -41,12 +41,17 @@ const dir = join(__dirname, 'util', 'tmp');
   app.get('/filteredimage', async (req: Request, res: Response) => {
     const image_url = parseURLString(req.url);
     if (!isUrlValid(image_url)) {
-      res.send('URL is not valid');
+      res.status(422).send('URL is not valid');
       return;
     }
     const imgPath = await filterImagePath(image_url);
-    res.send(imgPath);
-    res.on('finish', removeImagesFromServer);
+    res.status(200)
+      .sendFile(imgPath, (err) => {
+        if (err) throw new Error(err.message)
+        else {
+          removeImagesFromServer();
+        }
+      })
   });
 
   /**
